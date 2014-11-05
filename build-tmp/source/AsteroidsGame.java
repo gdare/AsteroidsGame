@@ -1,3 +1,19 @@
+import processing.core.*; 
+import processing.data.*; 
+import processing.event.*; 
+import processing.opengl.*; 
+
+import java.util.HashMap; 
+import java.util.ArrayList; 
+import java.io.File; 
+import java.io.BufferedReader; 
+import java.io.PrintWriter; 
+import java.io.InputStream; 
+import java.io.OutputStream; 
+import java.io.IOException; 
+
+public class AsteroidsGame extends PApplet {
+
 private SpaceShip zeus;
 Star[] fireballs;
 public void setup() 
@@ -20,10 +36,10 @@ public void draw()
       zeus.rotate(3);
     }
     if(key == 'w'){
-      zeus.accelerate(0.05);
+      zeus.accelerate(0.05f);
     }
     if(key == 's'){
-      zeus.accelerate(-0.05);
+      zeus.accelerate(-0.05f);
     }
   }
   zeus.move();
@@ -32,7 +48,7 @@ public void draw()
     fireballs[s].show();
   }
 }
-void keyPressed(){
+public void keyPressed(){
   if(key == ' '){
       zeus.setX((int)(Math.random() * 500) + 1);
       zeus.setY((int)(Math.random() * 500) + 1);
@@ -158,3 +174,12 @@ abstract class Floater //Do NOT modify the Floater class! Make changes in the Sp
   }   
 } 
 
+  static public void main(String[] passedArgs) {
+    String[] appletArgs = new String[] { "AsteroidsGame" };
+    if (passedArgs != null) {
+      PApplet.main(concat(appletArgs, passedArgs));
+    } else {
+      PApplet.main(appletArgs);
+    }
+  }
+}
