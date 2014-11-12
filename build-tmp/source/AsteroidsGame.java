@@ -16,6 +16,7 @@ public class AsteroidsGame extends PApplet {
 
 private SpaceShip zeus;
 Star[] fireballs;
+Asteroids[] rocks;
 public void setup() 
 {
   size(500,500);
@@ -23,6 +24,10 @@ public void setup()
   fireballs = new Star[200];
   for(int s = 0; s < fireballs.length; s++){
     fireballs[s] = new Star();
+  }
+  rocks = new Asteroids[10];
+  for(int r = 0; r < rocks.length; r++){
+    rocks[r] = new Asteroids();
   }
 }
 public void draw() 
@@ -43,36 +48,42 @@ public void draw()
     }
   }
   zeus.move();
-  zeus.show();
   for(int s = 0; s < fireballs.length; s++){
     fireballs[s].show();
   }
+  for(int r = 0; r < rocks.length; r++){
+    rocks[r].move();
+    rocks[r].show();
+  }
+  zeus.show();
 }
 public void keyPressed(){
   if(key == ' '){
       zeus.setX((int)(Math.random() * 500) + 1);
       zeus.setY((int)(Math.random() * 500) + 1);
+      zeus.setDirectionX(0);
+      zeus.setDirectionY(0);
     }
 }
 class SpaceShip extends Floater {   
   SpaceShip(){
   corners = 4; 
-  xCorners = new int [corners];
-  yCorners = new int [corners];
-  xCorners[0] = 16;   
-  yCorners[0] = 0;
-  xCorners[1] = -8;
-  yCorners[1] = -8;
-  xCorners[2] = -4;
-  yCorners[2] = 0;
-  xCorners[3] = -8;
-  yCorners[3] = 8;
-  myColor = color(255,0,0);   
-  myCenterX = 250;
-  myCenterY = 250;    
-  myDirectionX = 0;
-  myDirectionY = 0;   
-  myPointDirection = 0;     
+    xCorners = new int [corners];
+    yCorners = new int [corners];
+    xCorners[0] = 16;   
+    yCorners[0] = 0;
+    xCorners[1] = -8;
+    yCorners[1] = -8;
+    xCorners[2] = -4;
+    yCorners[2] = 0;
+    xCorners[3] = -8;
+    yCorners[3] = 8;
+    myColor = color(255,0,0);   
+    myCenterX = 250;
+    myCenterY = 250;    
+    myDirectionX = 0;
+    myDirectionY = 0;   
+    myPointDirection = 0;     
   }
   public void setX(int x) {myCenterX = x;} 
   public int getX() {return (int)myCenterX;}
@@ -96,6 +107,42 @@ class Star{
     fill(255);
     ellipse(myxpos, myypos, 3,3);
   }
+}
+class Asteroids extends Floater{
+  int rotSpeed;
+  Asteroids(){
+    corners = 4; 
+    xCorners = new int [corners];
+    yCorners = new int [corners];
+    xCorners[0] = 10;   
+    yCorners[0] = 10;
+    xCorners[1] = -10;
+    yCorners[1] = 10;
+    xCorners[2] = -10;
+    yCorners[2] = -10;
+    xCorners[3] = 10;
+    yCorners[3] = -10;
+    myColor = color(150);   
+    myCenterX = (int)(Math.random()*500) + 1;
+    myCenterY = (int)(Math.random()*500) + 1;    
+    myDirectionX = (Math.random()*3)-1;
+    myDirectionY = (Math.random()*3)-1;   
+    myPointDirection = (Math.random()*360)+1;  
+  }
+  public void move(){
+    rotate(rotSpeed);
+    super.move();
+  }
+  public void setX(int x) {myCenterX = x;} 
+  public int getX() {return (int)myCenterX;}
+  public void setY(int y) {myCenterY = y;}  
+  public int getY() {return (int)myCenterY;}   
+  public void setDirectionX(double x) {myDirectionX = x;}   
+  public double getDirectionX() {return myDirectionX;}
+  public void setDirectionY(double y) {myDirectionY = y;}
+  public double getDirectionY() {return myDirectionY;}  
+  public void setPointDirection(int degrees) {myPointDirection = degrees;} 
+  public double getPointDirection() {return myPointDirection;}
 }
 abstract class Floater //Do NOT modify the Floater class! Make changes in the SpaceShip class 
 {   
