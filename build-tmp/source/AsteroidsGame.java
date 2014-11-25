@@ -15,35 +15,35 @@ import java.io.IOException;
 public class AsteroidsGame extends PApplet {
 
 private SpaceShip zeus;
-Star[] fireballs;
-Asteroids[] rocks;
-public void setup() 
-{
+private Star[] fireballs;
+public int rocks = 10;
+private ArrayList <Asteroids> numRocks = new ArrayList <Asteroids>();
+private ArrayList <Bullet> shoot = new ArrayList <Bullet>();
+public void setup(){
   size(500,500);
   zeus = new SpaceShip();
   fireballs = new Star[200];
   for(int s = 0; s < fireballs.length; s++){
     fireballs[s] = new Star();
   }
-  rocks = new Asteroids[10];
-  for(int r = 0; r < rocks.length; r++){
-    rocks[r] = new Asteroids();
+  for(int nr = 0; nr < rocks; nr++){
+    numRocks.add(new Asteroids());
   }
 }
 public void draw() 
 {
   background(0);
   if(keyPressed == true){
-    if(key == 'a'){
+    if (key == 'a'){
       zeus.rotate(-3);
     }
-    if(key == 'd'){
+    if (key == 'd'){
       zeus.rotate(3);
     }
-    if(key == 'w'){
+    if (key == 'w'){
       zeus.accelerate(0.05f);
     }
-    if(key == 's'){
+    if (key == 's'){
       zeus.accelerate(-0.05f);
     }
   }
@@ -51,23 +51,36 @@ public void draw()
   for(int s = 0; s < fireballs.length; s++){
     fireballs[s].show();
   }
-  for(int r = 0; r < rocks.length; r++){
-    rocks[r].move();
-    rocks[r].show();
+  for(int nr = 0; nr < numRocks.size(); nr++){
+    numRocks.get(nr).move();
+    numRocks.get(nr).show();
+    if (dist(zeus.getX(), zeus.getY(), numRocks.get(nr).getX(), numRocks.get(nr).getY()) < 20){
+      numRocks.remove(nr);
+    }
+  }
+  for(int b = 0; b < shoot.size(); b++){
+    shoot.get(b).move();
+    shoot.get(b).show();
+    if ((shoot.get(b).getX() > width - 10) || (shoot.get(b).getY() > height - 10) || (shoot.get(b).getX() < 10) || (shoot.get(b).getY() < 10)){
+      shoot.remove(b);
+    }
   }
   zeus.show();
 }
 public void keyPressed(){
-  if(key == ' '){
+  if (key == 'f'){
       zeus.setX((int)(Math.random() * 500) + 1);
       zeus.setY((int)(Math.random() * 500) + 1);
       zeus.setDirectionX(0);
       zeus.setDirectionY(0);
     }
+    if (key == ' '){
+      shoot.add(new Bullet());
+    }
 }
 class SpaceShip extends Floater {   
   SpaceShip(){
-  corners = 4; 
+    corners = 4; 
     xCorners = new int [corners];
     yCorners = new int [corners];
     xCorners[0] = 16;   
@@ -111,6 +124,7 @@ class Star{
 class Asteroids extends Floater{
   int rotSpeed;
   Asteroids(){
+    rotSpeed = (int)(Math.random()*5)+1;
     corners = 4; 
     xCorners = new int [corners];
     yCorners = new int [corners];
@@ -132,6 +146,39 @@ class Asteroids extends Floater{
   public void move(){
     rotate(rotSpeed);
     super.move();
+  }
+  public void setX(int x) {myCenterX = x;} 
+  public int getX() {return (int)myCenterX;}
+  public void setY(int y) {myCenterY = y;}  
+  public int getY() {return (int)myCenterY;}   
+  public void setDirectionX(double x) {myDirectionX = x;}   
+  public double getDirectionX() {return myDirectionX;}
+  public void setDirectionY(double y) {myDirectionY = y;}
+  public double getDirectionY() {return myDirectionY;}  
+  public void setPointDirection(int degrees) {myPointDirection = degrees;} 
+  public double getPointDirection() {return myPointDirection;}
+}
+class Bullet extends Floater{
+  double dRadians;
+  Bullet(){
+    corners = 4;
+    xCorners = new int [corners];
+    yCorners = new int [corners];
+    xCorners[0] = 10;   
+    yCorners[0] = 2;
+    xCorners[1] = -10;
+    yCorners[1] = 2;
+    xCorners[2] = -10;
+    yCorners[2] = -2;
+    xCorners[3] = 10;
+    yCorners[3] = -2;
+    myColor = color(0,255,0);
+    myCenterX = zeus.getX();
+    myCenterY = zeus.getY();
+    myPointDirection = zeus.getPointDirection();
+    dRadians = myPointDirection*(Math.PI/180);
+    myDirectionX = 5 * Math.cos(dRadians);
+    myDirectionY = 5 * Math.sin(dRadians);
   }
   public void setX(int x) {myCenterX = x;} 
   public int getX() {return (int)myCenterX;}
