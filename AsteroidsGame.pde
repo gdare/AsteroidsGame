@@ -1,6 +1,6 @@
 private SpaceShip zeus;
 private Star[] fireballs;
-public int rocks = 10;
+//public int lives = 3;
 private ArrayList <Asteroids> numRocks = new ArrayList <Asteroids>();
 private ArrayList <Bullet> shoot = new ArrayList <Bullet>();
 public void setup(){
@@ -10,13 +10,16 @@ public void setup(){
   for(int s = 0; s < fireballs.length; s++){
     fireballs[s] = new Star();
   }
-  for(int nr = 0; nr < rocks; nr++){
+  for(int nr = 0; nr < 10; nr++){
     numRocks.add(new Asteroids());
   }
 }
 public void draw() 
-{
+{ 
   background(0);
+  for(int s = 0; s < fireballs.length; s++){
+    fireballs[s].show();
+  }
   if(keyPressed == true){
     if (key == 'a'){
       zeus.rotate(-3);
@@ -25,31 +28,38 @@ public void draw()
       zeus.rotate(3);
     }
     if (key == 'w'){
-      zeus.accelerate(0.05);
+      zeus.accelerate(0.075);
     }
     if (key == 's'){
-      zeus.accelerate(-0.05);
+      zeus.accelerate(-0.075);
     }
   }
   zeus.move();
-  for(int s = 0; s < fireballs.length; s++){
-    fireballs[s].show();
-  }
+  zeus.show();
   for(int nr = 0; nr < numRocks.size(); nr++){
     numRocks.get(nr).move();
     numRocks.get(nr).show();
-    if (dist(zeus.getX(), zeus.getY(), numRocks.get(nr).getX(), numRocks.get(nr).getY()) < 20){
-      numRocks.remove(nr);
-    }
   }
   for(int b = 0; b < shoot.size(); b++){
     shoot.get(b).move();
     shoot.get(b).show();
+    for (int nr = 0; nr < numRocks.size(); nr++){
+      numRocks.get(nr).getX();
+      numRocks.get(nr).getY();
+      if (dist(shoot.get(b).getX(), shoot.get(b).getY(), numRocks.get(nr).getX(), numRocks.get(nr).getY()) < 10){
+        shoot.remove(b);
+        numRocks.remove(nr);
+        break;
+      }
+    }
+   
+  }
+  for(int b = 0; b < shoot.size(); b++){
     if ((shoot.get(b).getX() > width - 10) || (shoot.get(b).getY() > height - 10) || (shoot.get(b).getX() < 10) || (shoot.get(b).getY() < 10)){
       shoot.remove(b);
+      break;
     }
   }
-  zeus.show();
 }
 void keyPressed(){
   if (key == 'f'){
@@ -145,17 +155,6 @@ class Asteroids extends Floater{
 class Bullet extends Floater{
   double dRadians;
   Bullet(){
-    corners = 4;
-    xCorners = new int [corners];
-    yCorners = new int [corners];
-    xCorners[0] = 10;   
-    yCorners[0] = 2;
-    xCorners[1] = -10;
-    yCorners[1] = 2;
-    xCorners[2] = -10;
-    yCorners[2] = -2;
-    xCorners[3] = 10;
-    yCorners[3] = -2;
     myColor = color(0,255,0);
     myCenterX = zeus.getX();
     myCenterY = zeus.getY();
@@ -163,6 +162,11 @@ class Bullet extends Floater{
     dRadians = myPointDirection*(Math.PI/180);
     myDirectionX = 5 * Math.cos(dRadians);
     myDirectionY = 5 * Math.sin(dRadians);
+  }
+  public void show(){
+    fill(0,255,0);
+    noStroke();
+    ellipse((int)myCenterX,(int)myCenterY, 5, 5);
   }
   public void setX(int x) {myCenterX = x;} 
   public int getX() {return (int)myCenterX;}
